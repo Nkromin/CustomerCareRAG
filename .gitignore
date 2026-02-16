@@ -25,6 +25,7 @@ MANIFEST
 
 # Virtual Environment
 .venv/
+.uv/
 venv/
 ENV/
 env/
@@ -32,6 +33,7 @@ env/
 
 # Environment Variables
 .env
+!.env.example
 .env.local
 .env.*.local
 
@@ -101,7 +103,6 @@ tmp/
 docs/_build/
 site/
 
-.venv
 
 # OS
 .DS_Store
