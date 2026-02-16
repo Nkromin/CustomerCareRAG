@@ -24,7 +24,8 @@ CRITICAL GUIDELINES:
 
 You have access to the following tools:
 - create_hr_ticket: Create an HR support ticket
-- check_leave_balance: Check employee leave balance"""
+- check_leave_balance: Check employee leave balance
+- check_ticket_status: Check status of existing tickets"""
 
 ROUTER_PROMPT = """Analyze the user query and decide the next action.
 
@@ -42,6 +43,7 @@ Classification Rules:
 2. "tool" - If the query requires an action:
    - Creating a ticket, reporting an issue, filing a complaint
    - Checking leave balance, checking status
+   - Asking about ticket status, tracking a ticket
 
 3. "general" - Only if:
    - Simple greeting without a question
@@ -77,11 +79,22 @@ TOOL_SELECTION_PROMPT = """Select the appropriate tool for this request.
 Query: {query}
 
 Available tools:
-1. create_hr_ticket - For creating HR tickets, reporting issues, complaints
-2. check_leave_balance - For checking leave/vacation balance
+1. create_hr_ticket
+   - Use for: Creating HR tickets, reporting issues, complaints
+   - Parameters: {{"issue": "description of the issue"}}
+   
+2. check_leave_balance
+   - Use for: Checking leave/vacation balance
+   - Parameters: {{"employee_id": "user_id or 'current_user'"}}
+   
+3. check_ticket_status
+   - Use for: Checking the status of existing tickets
+   - Parameters: {{"ticket_id": "TKT-XXXXXX"}} (optional, omit if not provided)
 
-Return the tool name and extracted parameters in JSON format:
-{{"tool": "tool_name", "parameters": {{"param1": "value1"}}}}
+Return the tool name and parameters in this exact JSON format:
+{{"tool": "tool_name", "parameters": {{"param_name": "value"}}}}
+
+If ticket_id is not mentioned for check_ticket_status, use empty parameters: {{"parameters": {{}}}}
 
 JSON:"""
 

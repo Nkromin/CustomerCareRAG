@@ -270,12 +270,46 @@ class PolicyAssistantGraph:
             # Execute tool
             if tool_name in TOOL_MAP:
                 tool_func = TOOL_MAP[tool_name]
-                result = tool_func.invoke(parameters)
+
+                # Map parameters to match tool signatures
+                mapped_params = parameters.copy()
+
+                # Fix parameter names for create_hr_ticket
+                if tool_name == "create_hr_ticket":
+                    # Handle various parameter names that LLM might generate
+                    issue_text = (
+                        mapped_params.get("issue") or
+                        mapped_params.get("subject") or
+                        mapped_params.get("description") or
+                        mapped_params.get("query") or
+                        query  # fallback to original query
+                    )
+                    mapped_params = {"issue": issue_text}
+
+                # Fix parameter names for check_leave_balance
+                elif tool_name == "check_leave_balance":
+                    employee_id = (
+                        mapped_params.get("employee_id") or
+                        mapped_params.get("user_id") or
+                        "current_user"
+                    )
+                    mapped_params = {"employee_id": employee_id}
+
+                # Fix parameter names for check_ticket_status
+                elif tool_name == "check_ticket_status":
+                    ticket_id = mapped_params.get("ticket_id") or mapped_params.get("id")
+                    if ticket_id:
+                        mapped_params = {"ticket_id": ticket_id}
+                    else:
+                        mapped_params = {}
+
+                # Invoke tool with mapped parameters
+                result = tool_func.invoke(input=mapped_params)
 
                 tool_calls = state.get("tool_calls", [])
                 tool_results = state.get("tool_results", [])
 
-                tool_calls.append({"tool": tool_name, "params": parameters})
+                tool_calls.append({"tool": tool_name, "params": mapped_params})
                 tool_results.append(result)
 
                 print(f"   ✓ Tool executed successfully")
@@ -297,7 +331,7 @@ class PolicyAssistantGraph:
             print(f"   ⚠️  Could not parse tool selection")
             # Fallback: try to match tool names in response
             if "create_hr_ticket" in response.lower():
-                result = TOOL_MAP["create_hr_ticket"].invoke({"issue": query})
+                result = TOOL_MAP["create_hr_ticket"].invoke(input={"issue": query})
                 return {
                     **state,
                     "tool_calls": [{"tool": "create_hr_ticket", "params": {"issue": query}}],
@@ -305,10 +339,18 @@ class PolicyAssistantGraph:
                     "context": result
                 }
             elif "check_leave_balance" in response.lower():
-                result = TOOL_MAP["check_leave_balance"].invoke({"employee_id": "current_user"})
+                result = TOOL_MAP["check_leave_balance"].invoke(input={"employee_id": "current_user"})
                 return {
                     **state,
-                    "tool_calls": [{"tool": "check_leave_balance", "params": {}}],
+                    "tool_calls": [{"tool": "check_leave_balance", "params": {"employee_id": "current_user"}}],
+                    "tool_results": [result],
+                    "context": result
+                }
+            elif "check_ticket_status" in response.lower():
+                result = TOOL_MAP["check_ticket_status"].invoke(input={})
+                return {
+                    **state,
+                    "tool_calls": [{"tool": "check_ticket_status", "params": {}}],
                     "tool_results": [result],
                     "context": result
                 }
@@ -379,8 +421,9 @@ class PolicyAssistantGraph:
         Returns:
             Final state with response
         """
+        query_str = str(query) if not isinstance(query, str) else query
         print(f"\n{'='*60}")
-        print(f"🤖 AGENT INVOKED: {query[:50]}...")
+        print(f"🤖 AGENT INVOKED: {query_str[:50]}...")
         print(f"{'='*60}")
 
         # Initialize state
