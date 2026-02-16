@@ -1,0 +1,49 @@
+Employee Expense Reimbursement Policy
+
+Effective Date: January 2026
+
+1. Travel Expenses
+
+The company reimburses:
+
+Economy class airfare
+
+AC 2-tier train fare
+
+Cab fare for official travel
+
+Hotel stay up to ₹6000 per night
+
+2. Meal Allowance
+
+₹800 per day for domestic travel
+
+₹2500 per day for international travel
+
+3. Claim Submission
+
+Claims must be submitted within 15 days of expense.
+
+Original bills mandatory.
+
+Claims beyond 30 days require CFO approval.
+
+4. Non-Reimbursable Expenses
+
+Alcohol
+
+Personal shopping
+
+Traffic fines
+
+Luxury hotel upgrades
+
+5. Approval Workflow
+
+Employee submits expense form.
+
+Reporting manager approval.
+
+Finance team verification.
+
+Reimbursement processed within 10 working days.

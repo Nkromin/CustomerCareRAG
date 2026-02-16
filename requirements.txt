@@ -1,0 +1,21 @@
+# LLM and Agent Framework
+groq==0.37.1
+langchain==1.2.10
+langchain-core==1.2.13
+langchain-community==0.4.1
+langchain-text-splitters==1.1.0
+langchain-groq==1.1.2
+langgraph==0.2.58
+# RAG Components
+faiss-cpu==1.13.2
+sentence-transformers==5.2.2
+pypdf==6.7.0
+# Embeddings and ML (required by sentence-transformers)
+torch>=2.10.0
+transformers>=5.1.0
+# UI
+streamlit==1.54.0
+# Utilities
+python-dotenv==1.2.1
+pydantic==2.12.5
+typing-extensions>=4.15.0
