@@ -55,7 +55,7 @@ This application includes 4 practical examples:
 
 Execute the main script:
 ```bash
-python main.py
+streamlit run app.py
 ```
 
 This will run all four examples and display the results.
